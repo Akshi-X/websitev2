@@ -781,8 +781,11 @@ a {
 .gallery-event-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.8s var(--ease-luxury);
+    object-fit: contain;
+    /* Changed from cover to contain to prevent zooming/cropping */
+    background-color: #020c1b;
+    /* Dark background for letterboxing */
+    transition: transform 0.5s var(--ease-luxury);
     filter: brightness(0.8);
 }
 
@@ -791,21 +794,28 @@ a {
     inset: 0;
     background: linear-gradient(to top,
             rgba(2, 12, 27, 0.95) 0%,
-            rgba(2, 12, 27, 0.7) 40%,
-            rgba(2, 12, 27, 0.1) 100%);
+            rgba(2, 12, 27, 0.8) 50%,
+            rgba(2, 12, 27, 0.4) 100%);
+    /* and darker gradient for better text readability */
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
+    /* Center text vertically for better focus */
+    align-items: center;
+    /* Center text horizontally */
+    text-align: center;
     padding: 2rem;
     opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.4s var(--ease-luxury);
+    transform: translateY(10px);
+    transition: all 0.3s var(--ease-luxury);
 }
 
 /* Hover Effects */
 .gallery-event-card:hover .gallery-event-image {
-    transform: scale(1.1);
-    filter: brightness(1);
+    transform: scale(1.03);
+    /* Reduced scale from 1.1 */
+    filter: brightness(0.4);
+    /* Darken image more on hover to make text pop */
 }
 
 .gallery-event-card:hover .gallery-event-overlay {
@@ -1409,4 +1419,113 @@ a {
         transform: none;
         /* No tilt on mobile */
     }
+}
+
+/* ============================================
+   SCROLLING GALLERY (MARQUEE)
+   ============================================ */
+.scrolling-gallery-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 2rem 0;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.scrolling-gallery-track {
+    display: flex;
+    gap: 2rem;
+    width: max-content;
+    animation: scroll 40s linear infinite;
+}
+
+.scrolling-gallery-track:hover {
+    animation-play-state: paused;
+}
+
+.scrolling-gallery-item {
+    width: 300px;
+    height: 200px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.scrolling-gallery-item:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.scrolling-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+        /* Move half the combined width */
+    }
+}
+
+/* ============================================
+   LIGHTBOX MODAL
+   ============================================ */
+.lightbox-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.lightbox-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.lightbox-modal.active .lightbox-content {
+    transform: scale(1);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 3rem;
+    cursor: pointer;
+    transition: color 0.3s;
+    z-index: 10001;
+}
+
+.lightbox-close:hover {
+    color: var(--gold-primary);
 }

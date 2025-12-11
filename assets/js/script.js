@@ -1,5 +1,5 @@
 // Smart Navbar Logic
-(function() {
+(function () {
     let lastScrollY = window.scrollY;
     const navbar = document.querySelector('.navbar');
     const scrollThreshold = 15;
@@ -38,5 +38,54 @@
         }
 
         lastScrollY = currentScrollY;
+    });
+})();
+
+// Lightbox Logic
+(function () {
+    // Create Lightbox DOM
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox-modal';
+    lightbox.innerHTML = `
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" src="" alt="Enlarged Image">
+    `;
+    document.body.appendChild(lightbox);
+
+    const lightboxImg = lightbox.querySelector('.lightbox-content');
+    const closeBtn = lightbox.querySelector('.lightbox-close');
+
+    // Function to open lightbox
+    const openLightbox = (src) => {
+        lightboxImg.src = src;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Disable scroll
+    };
+
+    // Function to close lightbox
+    const closeLightbox = () => {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = ''; // Enable scroll
+    };
+
+    // Event Delegation for Gallery Images
+    document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'IMG' &&
+            (e.target.closest('.scrolling-gallery-item') || e.target.closest('.gallery-event-card'))) {
+            openLightbox(e.target.src);
+        }
+    });
+
+    // Close events
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+            closeLightbox();
+        }
     });
 })();
